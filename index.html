@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AR.js Example with 3D Model</title>
+  <meta charset="utf-8">
+  <style>
+    body { margin: 0; }
+    #arjsDebugUI { display: none; }
+  </style>
+</head>
+<body>
+  <!-- Importa o A-Frame e AR.js -->
+  <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.js"></script>
+
+  <!-- Define a cena AR -->
+  <a-scene embedded arjs>
+    <!-- Define um marcador Hiro com emissão de eventos -->
+    <a-marker preset="hiro" emitevents="true">
+      <!-- Modelo 3D com tamanho menor e rotação suave -->
+      <a-entity 
+        id="arduino-model"
+        gltf-model="url(sensor_de_temperatura.glb)" 
+        scale="1.5 1.5 1.5" 
+        position="0 0 0" 
+        rotation="0 0 0"
+        animation="property: rotation; to: 0 360 0; loop: true; dur: 10000; easing: linear">
+      </a-entity>
+    </a-marker>
+    <!-- Define a câmera -->
+    <a-entity camera></a-entity>
+  </a-scene>
+
+  <script>
+    // Manipuladores de eventos para manter o modelo visível mesmo quando o marcador é perdido
+    var marker = document.querySelector('a-marker');
+    var model = document.getElementById('arduino-model');
+
+    marker.addEventListener('markerLost', function() {
+      model.setAttribute('visible', 'false');
+    });
+
+    marker.addEventListener('markerFound', function() {
+      model.setAttribute('visible', 'true');
+    });
+
+    // Verificação para garantir que o modelo seja carregado
+    model.addEventListener('model-loaded', function() {
+      console.log('Modelo carregado com sucesso.');
+    });
+
+    model.addEventListener('model-error', function() {
+      console.error('Erro ao carregar o modelo.');
+    });
+  </script>
+</body>
+</html>
